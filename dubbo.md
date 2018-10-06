@@ -74,6 +74,107 @@ public class DubboConfiguration {
 
     高可用，通过设计，较少系统不能提供服务时间
 
+9.dubbo负载均衡
+  Random loadBalance
+  基于权重的随机负载均衡机制
+  RoundRobin loadblance
+  基于权重的伦旭堵在均衡
+  leastACtive loadbalance
+  最少活跃数负载均衡机制
+  总是条响应快的模块进行调用
+  consistenthash loadblance
+  一致性hash，负载均衡
+  方法名参数一直，都会去同一台服务
+10.权重设置
+  权重可以在管理平台直接修改，也可以直接那一台服务的权重编辑
+11.服务降级
+ 什么是服务降级
+  当服务压力剧增的的情况下，根据实际业务情况及流量，对一些服务和页面
+  有策略的不处理或换种简单的方式处理，从而释放服务器资源以保证和弦交易的正常运作或高效运作
+
+
+  可以通过服务降级功能临时屏蔽某个出错的非关键服务，并定义降级后的返回策略  
+
+  1.不发起远程调用返回为空
+  2.当服务失败的时候返回为空
+
+ 12，dubbo结合Hystrix
+   添加依赖
+   <dependency>
+		<groupId>org.springframework.cloud</groupId>
+		<artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+		<version>2.0.1.RELEASE</version>
+	</dependency>
+    提供者方法注解
+     1.HystrixCommand 方法配置
+     2.EnableHystrix
+     消费者
+     1.HystrixCommand 方法配置，添加fallbackMethod = "hello"
+     2.EnableHystrix
+    大坑
+     java.lang.NoSuchMethodError: org.springframework.boot.builder.SpringApplicationBuilder.<init>([Ljava/lang/Object;)V
+     原因版本不兼容最好都是最新版本
+ 13集群容错
+  Failover Cluster(默认)
+  失败自动切换，当出现失败，重试其他服务器，通常用于读操作，但重试会带来更长延迟，统统过
+  retries=2来设置重试次数，不包换第一次
+  重试次数配置如下：
+	<dubbo:service retries="2" />
+	或
+	<dubbo:reference retries="2" />
+	或
+	<dubbo:reference>
+	<dubbo:method name="findFoo" retries="2" />
+	</dubbo:reference>
+  Faillfast Cluster
+   快速失败，只发起一次调用，失败立即报错，通常使用非幂等的写操作。比如新增记录
+
+  Failback Cluster
+  失败自动恢复，后台记录失败请求，定时重发，通常用于消息通知操作
+
+  Forking Cluster
+  并行调用多个服务器，只要一个成功即返回，通常用于实施先较高的读操作
+  但是需要浪费资源，通过forks=2设置最大并行数
+  
+  Broadcast Cluster
+  广播调用所以提供者，逐个调用，任意一台失败，就失败通常使用与多有提供者更新
+  缓存或日志等本地资源信息
+  集群模式配置
+	按照以下示例在服务提供方和消费方配置集群模式
+	<dubbo:service cluster="failsafe" />
+	或
+	<dubbo:reference cluster="failsafe" />
+ 14.RPC原理
+  1.服务消费者调用以本地调用方式调用服务
+  2.client stud 接受到调用后负责方法，参数等组装成能够进行网络消息体
+  3.client stud 找到服务地址，并将消息发送到服务端
+  4.server stud 接受到消息后进行解码
+  5.server stud 根据解码结果调用本地服务
+  6.本地服务之星并将结果返回给server stud
+  7.server stud 将返回结果打包成次奥西发送至消费方
+  8.client stud 接受到消息，并进行解码
+  9，消费方的到最终结果
+ 15.netty通讯原理
+  是一个异步时间驱动的网络应用程序框架。用于快速可维护的高性能协议服务器和
+  客户端，他极大简化了TCP和udp套件字服务网络编程
+ 16.dubbo原理
+  config   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
